@@ -1,0 +1,106 @@
+# Week 2 Challenge
+
+## Tasks
+
+For this week's challenge, you are tasked with meeting the following requirements:
+
+* Create a database for a shop
+mysql> create database MyShop;
+mysql> use MyShop;
+------------------------------------------------------------------------------------
+* Create 4 tables within the database
+    * **Category** 
+    * **Subcategory**
+    * **Product**
+    * **Sales**
+* Create the tables so that they include the corresponding columns: 
+    * Category Table:
+
+    | CategoryID  | CategoryName |
+    |-------------|--------------|
+    |  ** | **   |
+
+    * Subcategory Table:
+
+    | SubCategoryID | CategoryID  | SubCategoryName |
+    |---------------|-------------|-----------------|
+    | **   |  ** | **      |
+
+    * Product Table:
+
+    | SubCategoryID | ProductID   | ProductName |
+    |---------------|-------------|-------------|
+    | **    |  ** | **  |
+
+    * Sales Table:
+
+    | SalesID | ProductID | Quantity | UnitPrice | DateOfSale |
+    |---------|-----------|----------|-----------|------------|
+    | \*\*    | \*\*      | \*\*     | \*\*      | \*\*       |
+
+* Populate the tables with dummy data
+
+mysql> create table Category (CategoryID int, CategoryName char(25));
+mysql> insert into category values (1, 'Technology');
+mysql> insert into category values (2, 'Appliances');
+mysql> insert into category values (3, 'Beauty');
+mysql> insert into category values (4, 'Jewellery');
+
+mysql> create table Subcategory (SubCategoryID int, CategoryID int, SubCategoryName char(25));
+mysql> insert into subcategory values (10, 1, 'TVs');
+mysql> insert into subcategory values (11, 1, 'Laptops');
+mysql> insert into subcategory values (12, 1, 'PCs');
+mysql> insert into subcategory values (20, 2, 'Fridges');
+mysql> insert into subcategory values (21, 2, 'Microwaves');
+mysql> insert into subcategory values (30, 3, 'Makeup');
+mysql> insert into subcategory values (31, 3, 'Fragrance');
+
+mysql> create table Product (SubCategoryID int, ProductID int, ProductName char(25));
+mysql> insert into product values (10, 100, 'LG 32inch');
+mysql> insert into product values (10, 101, 'LG 49inch');
+mysql> insert into product values (11, 110, 'HP Elite');
+mysql> insert into product values (11, 111, 'HP Dream');
+mysql> insert into product values (20, 200, 'Cold Fridge');
+mysql> insert into product values (21, 210, 'Hot Microwave');
+mysql> insert into product values (30, 300, 'Mascara');
+mysql> insert into product values (31, 310, 'Poison');
+
+mysql> create table Sales (SalesID int, ProductID int, Quantity int, UnitPrice float, DateOfSale date);
+mysql> insert into sales values (1000, 100, 15, 150, '2020-08-31');
+mysql> insert into sales values (1001, 101, 75, 350, '2020-09-01');
+mysql> insert into sales values (1002, 110, 12, 290, '2020-09-04');
+mysql> insert into sales values (1003, 111, 24, 300, '2020-09-07');
+mysql> insert into sales values (1004, 200, 6, 400, '2020-09-14');
+mysql> insert into sales values (1005, 210, 18, 50, '2020-09-21');
+mysql> insert into sales values (1001, 101, 11, 350, '2020-09-22');
+mysql> insert into sales values (1001, 101, 5, 350, '2020-09-23');
+mysql> insert into sales values (1001, 101, 5, 350, '2020-09-23');
+
+------------------------------------------------------------------------------------
+* Create an ERD Diagram to show the relationships between the tables
+
+* Write queries for the following: 
+    1. The most popular product sold on a specific date.
+mysql> select product.productname, sales.productid, count(*) as popular, sales.dateofsale from product, sales where sales.productid = product.productid and dateofsale = 20200923 group by dateofsale, sales.productID having count(*) = (select max(popular) from (select count(*) as popular, productid from sales group by dateofsale, productid) as popular);
+------------------------------------------------------------------------------------
+    2. The most popular product sold last week.
+mysql> select product.productname, sales.productid, Count(*) as "popular", week(sales.dateofsale) from product, sales where sales.productid = product.productid and week(dateofsale) = week(curdate())-1  group by week(dateofsale), sales.productid having count(*) = (select max(popular) from (select count(*) as popular, productid from sales where week(dateofsale) = week(curdate())-1 group by dateofsale, productid) as popular);
+------------------------------------------------------------------------------------
+3. The most popular product sold on a specific month.
+mysql> select product.productname, sales.productid, count(*) as "popular", month(sales.dateofsale) from product, sales where sales.productid = product.productid and month(dateofsale) = "08" group by month(dateofsale), sales.Productid having count(*) = (select max(popular) from (select count(*) as popular, productid from sales where month(dateofsale) = "08" group by dateofsale, productid) as popular);
+    
+## Stretch Goals
+    4. The most popular subcategory for a specific date.
+    5. The most popular subcategory for last week.
+    6. The most popular subcategory for a specific month.
+
+## Submission
+
+You should create a public Github repository that contains your ERD and queries.
+You are also expected to make a README.md file and to fill this README with information of this challenge. It should contain the following headers.
+
+- What was the challenge?
+- How I expected the challenge to go.
+- What went well?
+- What didn't go as planned?
+- Possible improvements for future challenges
